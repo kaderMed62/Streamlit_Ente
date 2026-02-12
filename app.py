@@ -56,6 +56,8 @@ if "menage_filename" not in st.session_state:
     st.session_state.menage_filename = None
 if "emploi_filename" not in st.session_state:
     st.session_state.emploi_filename = None
+if "active_module" not in st.session_state:
+    st.session_state.active_module = "exhaustivite"
 
 # =============================================================================
 # CSS ULTRA PREMIUM OPTIMISÉ
@@ -270,6 +272,35 @@ st.markdown("""
 }
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary) 100%);
+}
+
+/* Sidebar navigation buttons */
+[data-testid="stSidebar"] [data-testid="stButton"] button {
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  padding: 14px 16px !important;
+  line-height: 1.3 !important;
+  transition: all 0.25s ease !important;
+  text-align: left !important;
+  margin-bottom: 4px !important;
+}
+[data-testid="stSidebar"] [data-testid="stButton"] button[kind="secondary"] {
+  background: rgba(255,255,255,0.65) !important;
+  color: #4a4540 !important;
+  border: 2px solid rgba(0,0,0,0.08) !important;
+}
+[data-testid="stSidebar"] [data-testid="stButton"] button[kind="secondary"]:hover {
+  background: rgba(255,255,255,0.95) !important;
+  border-color: var(--primary) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2) !important;
+}
+[data-testid="stSidebar"] [data-testid="stButton"] button[kind="primary"] {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.35) !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -563,11 +594,33 @@ with st.sidebar:
     st.markdown("**ANSADE -- Mauritanie**")
     st.markdown("---")
 
-    module = st.radio(
-        "**Module d'analyse**",
-        ["📋 Exhaustivité", "💼 Emploi", "📊 Vue Consolidée"],
-        help="Sélectionnez le module souhaité"
-    )
+    # ═══════════════════════════════════════════════════════════════════
+    # Navigation par boutons stylisés
+    # ═══════════════════════════════════════════════════════════════════
+    st.markdown("**Module d'analyse**")
+
+    MODULES = {
+        "exhaustivite": {"label": "Exhaustivité", "icon": "📋", "color": "#3b82f6"},
+        "emploi": {"label": "Emploi", "icon": "💼", "color": "#10b981"},
+        "consolide": {"label": "Vue Consolidée", "icon": "📊", "color": "#8b5cf6"},
+    }
+
+    for key, m in MODULES.items():
+        is_active = st.session_state.active_module == key
+        if st.button(
+            f"{m['icon']}  {m['label']}",
+            key=f"nav_{key}",
+            use_container_width=True,
+            type="primary" if is_active else "secondary"
+        ):
+            st.session_state.active_module = key
+            st.rerun()
+
+    module = {
+        "exhaustivite": "📋 Exhaustivité",
+        "emploi": "💼 Emploi",
+        "consolide": "📊 Vue Consolidée",
+    }[st.session_state.active_module]
 
     st.markdown("---")
 
