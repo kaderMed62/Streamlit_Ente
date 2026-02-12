@@ -1335,7 +1335,7 @@ elif module == "💼 Emploi":
                     st.plotly_chart(fig, width='stretch')
 
                 # ─────────────────────────────────────────────────────
-                # Tableau détaillé par individu (AP3 >= 1)
+                # Tableau détaillé par individu (Occupés)
                 # ─────────────────────────────────────────────────────
                 st.markdown("---")
                 st.markdown("### 📋 Détail des Branches d'Activité par Individu")
@@ -1409,14 +1409,9 @@ elif module == "💼 Emploi":
                     "U19000": "Correction territoriale",
                 }
 
-                # Filtre AP3 >= 1
+                # br est déjà filtré sur Occupe == 1
                 br_ap3 = br.copy()
-                if "AP3" in br_ap3.columns:
-                    br_ap3["AP3_num"] = pd.to_numeric(br_ap3["AP3"], errors="coerce")
-                    br_ap3 = br_ap3[br_ap3["AP3_num"] >= 1]
-                    st.caption(f"🔎 Filtre : AP3 ≥ 1 → **{len(br_ap3):,}** individus occupés")
-                else:
-                    st.caption(f"📊 **{len(br_ap3):,}** individus occupés")
+                st.caption(f"🔎 Filtre : Occupé = 1 → **{len(br_ap3):,}** individus occupés")
 
                 if len(br_ap3) > 0:
                     # Construction du tableau
@@ -1474,7 +1469,7 @@ elif module == "💼 Emploi":
                         key="dl_branches_detail"
                     )
                 else:
-                    st.info("ℹ️ Aucun individu avec AP3 ≥ 1")
+                    st.info("ℹ️ Aucun individu occupé")
 
         with tab4:
             if "strate_label" in df.columns and len(df_age) > 0:
